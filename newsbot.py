@@ -38,7 +38,7 @@ def get_or_create_category(category_name):
     response = requests.get(
         f"{WP_URL}/wp-json/wp/v2/categories",
         params={"search": category_name},
-        auth=(WP_USERNAME, WP_APP_PASSWORD)
+        auth=(WP_USERNAME, WP_APP_PASSWORD), verify=False
     )
 
     if response.status_code == 200:
@@ -50,7 +50,7 @@ def get_or_create_category(category_name):
     response = requests.post(
         f"{WP_URL}/wp-json/wp/v2/categories",
         json={"name": category_name},
-        auth=(WP_USERNAME, WP_APP_PASSWORD)
+        auth=(WP_USERNAME, WP_APP_PASSWORD), verify=False
     )
 
     if response.status_code == 201:
@@ -105,7 +105,7 @@ def upload_image_to_wordpress(image_url):
                 "Content-Type": content_type,
             },
             data=img_response.content,
-            auth=(WP_USERNAME, WP_APP_PASSWORD)
+            auth=(WP_USERNAME, WP_APP_PASSWORD), verify=False
         )
 
         if response.status_code == 201:
@@ -142,7 +142,7 @@ def rewrite_article(title, summary, category):
     client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
     message = client.messages.create(
-        model="claude-sonnet-4-20250514",
+        model="claude-sonnet-4-5",
         max_tokens=1000,
         messages=[{
             "role": "user",
@@ -185,7 +185,7 @@ def post_to_wordpress(title, content, category_name, media_id=None):
     response = requests.post(
         f"{WP_URL}/wp-json/wp/v2/posts",
         json=data,
-        auth=(WP_USERNAME, WP_APP_PASSWORD)
+        auth=(WP_USERNAME, WP_APP_PASSWORD), verify=False
     )
 
     if response.status_code == 201:
