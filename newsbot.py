@@ -6,7 +6,8 @@ import hashlib
 import os
 import time
 import re
-from datetime import datetime
+from datetime import datetime, timezone
+import time as time_module
 from config import (
     WP_URL, WP_USERNAME, WP_APP_PASSWORD,
     RSS_FEEDS, MAX_ARTICLES_PER_RUN
@@ -125,7 +126,12 @@ def fetch_articles():
         category = feed_config["category"]
         try:
             feed = feedparser.parse(url)
-            for entry in feed.entries[:8]:
+            for entry in feed.entries[:20]:
+                published = entry.get("published_parsed") or entry.get("updated_parsed")
+                if published:
+                    import time as t
+                    if t.time() - t.mktime(published) > 86400:
+                        continue
                 articles.append({
                     "title": entry.get("title", ""),
                     "summary": entry.get("summary", entry.get("description", "")),
