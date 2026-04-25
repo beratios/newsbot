@@ -248,8 +248,9 @@ def run():
     for a in new_articles:
         title_key = a["title"][:40].lower()
         if title_key not in processed_titles:
-            unique_articles.append(a)
-            processed_titles.add(title_key)
+            if a.get("image_url"):
+                        unique_articles.append(a)
+                    processed_titles.add(title_key)
 
     print(f"📰 {len(new_articles)} yeni haber, {len(unique_articles)} benzersiz")
 
