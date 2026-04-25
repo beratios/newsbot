@@ -1,0 +1,38 @@
+name: NewsBot
+
+on:
+  schedule:
+    - cron: '0 * * * *'
+  workflow_dispatch:
+
+jobs:
+  run-newsbot:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install feedparser anthropic requests
+
+      - name: Run NewsBot
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          WP_URL: ${{ secrets.WP_URL }}
+          WP_USERNAME: ${{ secrets.WP_USERNAME }}
+          WP_APP_PASSWORD: ${{ secrets.WP_APP_PASSWORD }}
+        run: python newsbot.py
+
+      - name: Save seen articles
+        run: |
+          git config user.name "NewsBot"
+          git config user.email "newsbot@github.com"
+          git add seen_articles.json
+          git diff --staged --quiet || git commit -m "Update seen articles [skip ci]"
+          git push
