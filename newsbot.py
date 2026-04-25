@@ -155,27 +155,59 @@ def rewrite_article(title, summary, category):
             "content": f"""Read the following {category} news headline and summary, understand it fully.
 Then rewrite it completely in your own words in English.
 Make it fluent, engaging, and easy to read.
-First line should be the new title, then a blank line, then the article body (2-3 paragraphs).
-Return only the article text, nothing else.
+
+Return in this exact format:
+TITLE: [new title here]
+TAGS: [5-8 comma separated keywords/tags]
+CONTENT:
+[2-3 paragraphs of article body]
 
 Original headline: {title}
-Original summary: {summary}
-
-Rewritten article:"""
+Original summary: {summary}"""
         }]
     )
 
     return message.content[0].text
 
 def post_to_wordpress(title, content, category_name, media_id=None):
+    # Parse structured response
+    wp_title = title
+    wp_content = content
+    tags = []
+
     lines = content.strip().split("\n")
-    wp_title = lines[0].replace("Title:", "").replace("**", "").strip()
-    wp_content = "\n".join(lines[2:]).strip() if len(lines) > 2 else "\n".join(lines[1:]).strip()
+    content_start = 0
+    for i, line in enumerate(lines):
+        if line.startswith("TITLE:"):
+            wp_title = line.replace("TITLE:", "").strip()
+        elif line.startswith("TAGS:"):
+            tags = [t.strip() for t in line.replace("TAGS:", "").split(",") if t.strip()]
+        elif line.startswith("CONTENT:"):
+            content_start = i + 1
+
+    if content_start:
+        wp_content = "\n".join(lines[content_start:]).strip()
 
     if not wp_title: wp_title = title
     if not wp_content: wp_content = content
 
+    # Kategori ID al
     cat_id = get_or_create_category(category_name)
+
+    # Tag ID'lerini al veya oluştur
+    tag_ids = []
+    for tag in tags:
+        try:
+            r = requests.get(f"{WP_URL}/wp-json/wp/v2/tags", params={"search": tag}, auth=(WP_USERNAME, WP_APP_PASSWORD), verify=False)
+            found = [t for t in r.json() if t["name"].lower() == tag.lower()]
+            if found:
+                tag_ids.append(found[0]["id"])
+            else:
+                r2 = requests.post(f"{WP_URL}/wp-json/wp/v2/tags", json={"name": tag}, auth=(WP_USERNAME, WP_APP_PASSWORD), verify=False)
+                if r2.status_code == 201:
+                    tag_ids.append(r2.json()["id"])
+        except:
+            pass
 
     data = {
         "title": wp_title,
@@ -185,6 +217,8 @@ def post_to_wordpress(title, content, category_name, media_id=None):
 
     if cat_id:
         data["categories"] = [cat_id]
+    if tag_ids:
+        data["tags"] = tag_ids
     if media_id:
         data["featured_media"] = media_id
 
