@@ -6,22 +6,33 @@ WP_USERNAME = os.environ.get("WP_USERNAME", "")
 WP_APP_PASSWORD = os.environ.get("WP_APP_PASSWORD", "")
 
 RSS_FEEDS = [
-    {"url": "http://rss.cnn.com/rss/cnn_us.rss",                       "category": "US News"},
-    {"url": "http://rss.foxnews.com/fn/latest/feed/0/fnc/us",          "category": "US News"},
-    {"url": "https://feeds.apnews.com/rss/apf-usnews",                 "category": "US News"},
-    {"url": "http://rss.cnn.com/rss/cnn_allpolitics.rss",              "category": "Politics"},
-    {"url": "http://feeds.foxnews.com/foxnews/politics",                "category": "Politics"},
-    {"url": "https://feeds.apnews.com/rss/apf-politics",               "category": "Politics"},
-    {"url": "http://rss.cnn.com/rss/edition_health.rss",               "category": "Health"},
-    {"url": "http://feeds.foxnews.com/foxnews/health",                  "category": "Health"},
-    {"url": "http://rss.cnn.com/rss/edition_technology.rss",           "category": "Technology"},
-    {"url": "https://feeds.feedburner.com/TechCrunch/",                 "category": "Technology"},
-    {"url": "http://rss.cnn.com/rss/edition_sport.rss",                "category": "Sports"},
-    {"url": "https://www.espn.com/espn/rss/news",                       "category": "Sports"},
-    {"url": "http://rss.cnn.com/rss/edition_entertainment.rss",        "category": "Entertainment"},
-    {"url": "http://feeds.foxnews.com/foxnews/entertainment",           "category": "Entertainment"},
-    {"url": "http://rss.cnn.com/rss/edition_business.rss",             "category": "Business"},
-    {"url": "https://feeds.apnews.com/rss/apf-business",               "category": "Business"},
+    # --- US NEWS ---
+    {"url": "https://feeds.apnews.com/rss/apf-usnews",                      "category": "US News"},
+    {"url": "https://moxie.foxnews.com/google-publisher/us.xml",            "category": "US News"},
+    {"url": "https://feeds.nbcnews.com/nbcnews/public/news",                "category": "US News"},
+
+    # --- POLITICS ---
+    {"url": "https://feeds.apnews.com/rss/apf-politics",                    "category": "Politics"},
+    {"url": "https://moxie.foxnews.com/google-publisher/politics.xml",      "category": "Politics"},
+
+    # --- HEALTH ---
+    {"url": "https://feeds.apnews.com/rss/apf-Health",                      "category": "Health"},
+    {"url": "https://moxie.foxnews.com/google-publisher/health.xml",        "category": "Health"},
+
+    # --- TECHNOLOGY ---
+    {"url": "https://feeds.apnews.com/rss/apf-technology",                  "category": "Technology"},
+    {"url": "https://feeds.feedburner.com/TechCrunch/",                     "category": "Technology"},
+
+    # --- SPORTS ---
+    {"url": "https://feeds.apnews.com/rss/apf-sports",                      "category": "Sports"},
+    {"url": "https://www.espn.com/espn/rss/news",                           "category": "Sports"},
+
+    # --- ENTERTAINMENT ---
+    {"url": "https://feeds.apnews.com/rss/apf-entertainment",               "category": "Entertainment"},
+    {"url": "https://moxie.foxnews.com/google-publisher/entertainment.xml", "category": "Entertainment"},
+
+    # --- BUSINESS ---
+    {"url": "https://feeds.apnews.com/rss/apf-business",                    "category": "Business"},
 ]
 
 INTERVAL_HOURS = 1
