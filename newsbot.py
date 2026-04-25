@@ -254,8 +254,33 @@ def run():
 
     print(f"📰 {len(new_articles)} yeni haber, {len(unique_articles)} benzersiz")
 
+    # Kategori kotaları - minimum kaç haber yayınlansın
+    category_quotas = {
+        "Sports": 2,
+        "Politics": 2,
+        "US News": 2,
+        "Business": 1,
+        "Technology": 1,
+        "Health": 1,
+        "Entertainment": 1,
+    }
+    category_counts = {k: 0 for k in category_quotas}
     count = 0
-    for article in unique_articles:
+
+    # Önce kotası olan kategorileri doldur
+    priority_articles = []
+    remaining_articles = []
+    for a in unique_articles:
+        cat = a["category"]
+        if cat in category_counts and category_counts[cat] < category_quotas.get(cat, 0):
+            priority_articles.append(a)
+            category_counts[cat] += 1
+        else:
+            remaining_articles.append(a)
+
+    ordered_articles = priority_articles + remaining_articles
+
+    for article in ordered_articles:
         if count >= MAX_ARTICLES_PER_RUN:
             break
 
